@@ -42,6 +42,7 @@
       margin: 50px auto;
       position: relative;
       padding: 2rem;
+      transform: rotate(90deg);
       box-shadow:
         0 0 0 4px rgba(0,0,0,0.1),
         inset 0 0 0 3px #EFEFEF,
@@ -62,6 +63,21 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: right center;
+      transition: all 50ms;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+
+    .hour-hand {
+      background-color: red;
+    }
+
+    .min-hand {
+      background-color: green;
+    }
+
+    .second-hand {
+      background-color: blue;
     }
   </style>
     <script src="script.js"></script>

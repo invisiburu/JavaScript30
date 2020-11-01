@@ -1,41 +1,45 @@
 function getHand (type = '') {
   const el = document.querySelector(`.hand.${type}-hand`)
   if (!(el instanceof HTMLElement)) return null
-  el.style.transition = 'transform 100ms'
-  el.style.transformOrigin = 'right center'
   return el
-}
-
-function getHandRotate (date = new Date(), handType = '') {
-  switch (handType) {
-    case 'h': return (date.getHours() % 12) * 12 + 90
-    case 'm': return date.getMinutes() * 6 + 90
-    case 's': return date.getSeconds() * 6 + 90
-    case 'ms': return date.getMilliseconds() * 0.36 + 90
-    default: return 0
-  }
 }
 
 /** @param {HTMLElement} hand */
 function applyHandRotate (hand, val) {
-  if (!hand) return
-  console.log(val)
-  if (val === 90) {
-    hand.style.transition = 'transform 0ms'
+  if (val === 0) {
+    function fixRotateBackGlitch () {
+      const tr = hand.style.transition
+      hand.style.transition = 'none'
+      setTimeout(() => hand.style.transform = `rotate(0deg)`, 100)
+      setTimeout(() => {
+        hand.style.transition = tr
+        hand.removeEventListener('transitionend', fixRotateBackGlitch)
+      }, 150)
+    }
+    val = 360
+    hand.addEventListener('transitionend', fixRotateBackGlitch)
   }
   hand.style.transform = `rotate(${val}deg)`
 }
 
-const hHand = getHand('hour')
-const mHand = getHand('min')
 const sHand = getHand('second')
+const mHand = getHand('min')
+const hHand = getHand('hour')
+
+const mHandOffsetFactor = 1 / 365 * 6
+const hHandOffsetFactor = 1 / 365 * 30
 
 function tick () {
   const d = new Date()
-  applyHandRotate(hHand, getHandRotate(d, 'h'))
-  applyHandRotate(mHand, getHandRotate(d, 'm'))
-  applyHandRotate(sHand, getHandRotate(d, 'ms'))
+
+  const sDeg = d.getSeconds() * 6
+  const mDeg = d.getMinutes() * 6
+  const hDeg = (d.getHours() % 12) * 30
+
+  applyHandRotate(sHand, sDeg)
+  applyHandRotate(mHand, mDeg + sDeg * mHandOffsetFactor)
+  applyHandRotate(hHand, hDeg + mDeg * hHandOffsetFactor)
 }
 
 tick()
-setInterval(tick, 100);
+setInterval(tick, 1000);
