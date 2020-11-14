@@ -95,6 +95,7 @@ body {
   transition: height 0.3s;
   background: rgba(0,0,0,0.5);
   cursor: ew-resize;
+  user-select: none;
 }
 
 .progress__filled {
@@ -102,6 +103,7 @@ body {
   background: #ffc600;
   flex: 0;
   flex-basis: 50%;
+  user-select: none;
 }
 
 /* unholy css to style input type="range" */
